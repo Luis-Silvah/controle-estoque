@@ -8,20 +8,24 @@ connection = oracledb.connect(
 
 
 cursor = connection.cursor()
-cursor.execute(''' 
+
+cursor.execute("DROP TABLE produto")
+cursor.execute("""
                 CREATE TABLE produto(
                 nome  VARCHAR2(255) NOT NULL ,
                 descricao VARCHAR2(255),
                 codigo VARCHAR2(30) NOT NULL PRIMARY KEY,
                 custo INTEGER NOT NULL,
                 custoFixo INTEGER NOT NULL,
-                comissao INTEGER NOT NULL check (comissao > 0),
+                comissao INTEGER NOT NULL,
                 imposto INTEGER NOT NULL,
                 rentabilidade INTEGER NOT NULL 
-                )
-''')
+                )"""
+)
 
+connection.commit()
 #INSERT DE DADOS
+
 cursor.execute('''
                 INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
                 VALUES ('Caneta', 'Caneta Profissional', '1', 36, 15, 5, 12, 20);
