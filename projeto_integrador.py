@@ -1,26 +1,3 @@
-import oracledb
-
-connection = oracledb.connect(
-    user = 'BD150224213',
-    password = 'Hhqnm9',
-    dsn = 'BD-ACD/xe',
-)
-
-
-cursor = connection.cursor()
-cursor.execute(''' 
-                CREATE TABLE produto(
-                nome  VARCHAR2(255) NOT NULL UNIQUE,
-                descricao VARCHAR2(255),
-                codigo VARCHAR2(30) NOT NULL PRIMARY KEY,
-                custo INTEGER NOT NULL,
-                custoFixo INTEGER NOT NULL,
-                comissao INTEGER NOT NULL check (comissao > 0),
-                imposto INTEGER NOT NULL,
-                rentabilidade INTEGER NOT NULL 
-                )
-''')
-
 print(36 * "=")
 print("\t Sistema de Cadastro")
 print(36 * "=")

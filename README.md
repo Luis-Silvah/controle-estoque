@@ -1,8 +1,4 @@
-## Projeto Integrador
-
-## :ledger: Projeto Agronómico
-
-O primeiro fluxo do projeto inicia com a emissão do Pedido Eletrônico de serviços e termina com a impressão de etiquetas de identificação dos pacotes para coleta de material no campo.
+## :ledger: Projeto Integrador
 
 ## Configuração docker
 
@@ -24,6 +20,6 @@ Acessar o terminal para iniciar projeto
 # Python
 
 Instalar a dependências:
-````js 
+```js 
    pip install oracledb
-````
+```
