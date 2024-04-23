@@ -3,14 +3,14 @@ import oracledb
 connection = oracledb.connect(
     user = 'BD150224213',
     password = 'Hhqnm9',
-    dsn = 'BD-ACD/xe',
+    dsn = '172.16.12.14/xe',
 )
 
 
 cursor = connection.cursor()
 cursor.execute(''' 
                 CREATE TABLE produto(
-                nome  VARCHAR2(255) NOT NULL UNIQUE,
+                nome  VARCHAR2(255) NOT NULL ,
                 descricao VARCHAR2(255),
                 codigo VARCHAR2(30) NOT NULL PRIMARY KEY,
                 custo INTEGER NOT NULL,
@@ -21,6 +21,22 @@ cursor.execute('''
                 )
 ''')
 
+#INSERT DE DADOS
+cursor.execute('''
+                INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
+                VALUES ('Caneta', 'Caneta Profissional', '1', 36, 15, 5, 12, 20);
+                INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
+                VALUES ('Lapis', 'Preto B2', '2', 1, 1, 1, 1, 1);
+                INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
+                VALUES ('Caderno', 'Palmeiras', '3', 10, 10, 10, 10, 50);
+                INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
+                VALUES ('Caderno', 'Sao Paulo', '4', 10, 10, 10, 10, 0);
+                INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
+                VALUES ('Caderno', 'Corinthians', '5', 10, 10, 10, 10, -20);
+                INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade)
+                VALUES ('Caderno', 'Ponte Preta', '6', 10, 30, 20, 20, 29.99);
+               ''')
+connection.commit()
 print(36 * "=")
 print("\t Sistema de Cadastro")
 print(36 * "=")
