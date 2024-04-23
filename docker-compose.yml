@@ -1,0 +1,11 @@
+version: '1.0'
+services:
+  projeto_integrador:
+    image: python:3.9-slim-buster
+    container_name: projeto_integrador
+    working_dir: /srv/app
+    volumes:
+      - type: bind
+        source: ./
+        target: /srv/app
+    tty: true
