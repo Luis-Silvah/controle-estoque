@@ -1,4 +1,17 @@
-## :ledger: Projeto Integrador
+# :ledger: Projeto Integrador
+
+## Campos do Banco de dados
+
+### Tabela Produtos
+
+-    nome 
+-    descricao
+-    codigo
+-    custo
+-    custoFixo
+-    comissao
+-    imposto
+-    rentabilidade
 
 ## Configuração docker
 
@@ -20,6 +33,11 @@ Acessar o terminal para iniciar projeto
 # Python
 
 Instalar a dependências:
-```js 
+```python
    pip install oracledb
+```
+
+Rodar arquivo por linha de comando
+```python
+    python projeto_integrador.py
 ```
