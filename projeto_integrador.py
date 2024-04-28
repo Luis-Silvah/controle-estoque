@@ -1,14 +1,14 @@
-#Import Biblioteca Oracle
+# Import Biblioteca Oracle
 import oracledb
 
-#Criacao da Conexao com o Banco de Dados
+# Criacao da Conexao com o Banco de Dados
 connection = oracledb.connect(
     user = 'BD150224213',
     password = 'Hhqnm9',
     dsn = '172.16.12.14/xe',
 )
 
-#Criacao da tabela no OrableDB
+# Criacao da tabela no OrableDB
 cursor = connection.cursor()
 cursor.execute('DROP TABLE produto')
 
@@ -25,7 +25,7 @@ cursor.execute("""
                 )"""
 )
 
-#Inserts inicias na tabela
+# Inserts inicias na tabela
 def insert_produtos():
     cursor.execute(""" 
                 INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
@@ -67,7 +67,7 @@ def exibir_menu():
     print(36 * "=")
     print("1. Adicionar novo produto")
     print("2. Selecionar um produto")
-    print("3. Deletar do produto")
+    print("3. Deletar o produto")
     print("4. Listar produtos")
     print("5. Sair")
     print(36 * "-")
