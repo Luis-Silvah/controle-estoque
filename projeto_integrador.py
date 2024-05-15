@@ -67,10 +67,21 @@ def exibir_menu():
     print(36 * "=")
     print("1. Adicionar novo produto")
     print("2. Selecionar um produto")
-    print("3. Deletar o produto")
-    print("4. Listar produtos")
-    print("5. Sair")
+    print("3. Listar produtos")
+    print("4. Deletar produtos")
+    print("5. Atualizar produtos")
+    print("6. Sair")
     print(36 * "-")
+    
+def verifica_produto(selecionaProduto):
+    resultado = cursor.execute(f'SELECT * FROM PRODUTO WHERE codigo = {selecionaProduto}')
+
+    produto_encontrado = False
+
+    for lista in resultado:
+        produto_encontrado = True
+
+    return produto_encontrado
 
 def adicionar_produto():
     print(36 * "=")
@@ -78,60 +89,131 @@ def adicionar_produto():
     print(36 * "=")
 
     codProduto = int(input("Digite o código do produto: "))
-    nomeProduto = input("Digite o nome do produto: ")
-    descProduto = input("Adicione uma descrição ao produto: ")
-
-    custoProduto = float(input("Qual o custo do Produto: "))
-    custoFixoPct = float(input("Qual os custo fixos/administrativos do comércio [%]: "))
-    comissaoVendaPct = float(input("Qual a comissão de venda do produto,em porcentagem [%]: "))
-    impostoVendaPct = float(input("Qual a aliquota de imposto desejada [%]: "))
-    margemLucroPct = float(input("Qual a margem de lucro desejada [%]: "))
-
-    cursor.execute(f'SELECT * FROM PRODUTO WHERE codigo = {codProduto}')
-
-    listaProduto = []
-    listaProduto.append([nomeProduto,descProduto, codProduto, custoProduto, custoFixoPct, comissaoVendaPct, impostoVendaPct, margemLucroPct])
-
-    resultado = cursor.fetchall()
-
-    if(len(resultado) > 0):
+ 
+    if(verifica_produto(codProduto)):
         print('\n Já existe um produto com esse codigo \n')
     else:
+        nomeProduto = input("Digite o nome do produto: ")
+        descProduto = input("Adicione uma descrição ao produto: ")
+
+        custoProduto = float(input("Qual o custo do Produto: "))
+        custoFixoPct = float(input("Qual os custo fixos/administrativos do comércio [%]: "))
+        comissaoVendaPct = float(input("Qual a comissão de venda do produto,em porcentagem [%]: "))
+        impostoVendaPct = float(input("Qual a aliquota de imposto desejada [%]: "))
+        margemLucroPct = float(input("Qual a margem de lucro desejada [%]: "))
+
+        listaProduto = []
+        listaProduto.append([nomeProduto,descProduto, codProduto, custoProduto, custoFixoPct, comissaoVendaPct, impostoVendaPct, margemLucroPct])
+    
         cursor.execute(f""" 
                     INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
                     VALUES ('{nomeProduto}', '{descProduto}', '{codProduto}', {custoProduto}, {custoFixoPct}, {comissaoVendaPct}, {impostoVendaPct}, {margemLucroPct})
                 """)
         connection.commit()
 
-        tabela_produto(listaProduto)
+        tabela_produto(listaProduto[0])
 
         print('\n Cadastro concluído com sucesso! \n')
 
 def selecionar_produto():
     selecionaProduto = input('Digite o código do produto: ')
 
-    cursor.execute(f'SELECT * FROM PRODUTO WHERE codigo = {selecionaProduto}')
+    resultado = cursor.execute(f'SELECT * FROM PRODUTO WHERE codigo = {selecionaProduto}')
 
-    resultado = cursor.fetchall()
-    tabela_produto(resultado)
-
-def deletar_produto():
-    codProduto = int(input('Digite o código do produto: '))
-
-    cursor.execute(f"""
-        DELETE FROM produto WHERE codigo = {codProduto}
-    """)
-
-    connection.commit()
-
-    print("\n Produto deletado com sucesso! \n")
+    produto_encontrado = False
+    for lista in resultado:
+        produto_encontrado = True
+        tabela_produto(lista)
+    
+    if not produto_encontrado:
+        print("\n Não foi possivel encontrar produto! \n")
 
 def listar_produto():
-    cursor.execute(f'SELECT * FROM PRODUTO')
+    resultado = cursor.execute(f'SELECT * FROM PRODUTO')
 
-    lista = cursor.fetchall()
-    for item in lista:
-        tabela_produto([item])
+    for lista in resultado:
+        tabela_produto(lista)
+
+def deletar_produto():
+    codProduto = input('Digite o código do produto: ')
+
+    if(verifica_produto(codProduto)):
+        confirma = input('Digite o código do produto: S/N: ').upper()
+
+        while confirma != "S" and confirma != "N":
+            print("Digite S (Sim) e N (Não): ")
+            confirma = input('Digite o código do produto: S/N: ').upper()
+        else: 
+            if confirma == "S":
+                cursor.execute(f"""
+                    DELETE FROM produto WHERE codigo = {codProduto}
+                """)
+
+                connection.commit()
+
+                print("\n Produto deletado com sucesso! \n")
+            # else: 
+            #     print("\n Não deletar produto \n")
+    else:
+        print("\n Erro ao deletar produto! \n")
+
+def menu_editarProduto(prod):
+    print(40 * "=")
+    print("Menu editar produto:")
+    print(40 * "=")
+    print(f"1. Nome: \t\t {prod[0]}")
+    print(f"2. Descrição: \t\t {prod[1]}")
+    # print(f"3. Código: \t\t\t {prod[2]}")
+    print(f"3. Custo: \t\t\t {prod[3]}")
+    print(f"4. Custo Fixo/Administrativo: \t {prod[4]}")
+    print(f"5. Comissão: \t\t\t {prod[5]}")
+    print(f"6. Imposto: \t\t\t {prod[6]}")
+    print(f"7. Rentabilidade: \t\t {prod[7]}")
+    print(40 * "-")
+
+def atualizar_tabela(column, codProduto):
+        valor = input("Digite o novo valor: ")
+
+        cursor.execute(f"""
+            UPDATE produto SET {column} = '{valor}' WHERE codigo = {codProduto}
+        """)
+        connection.commit()
+        print("Produto atualizado com sucesso!")
+
+def editar_produto():
+    codProduto = input('Digite o código do produto: ')
+
+    if(verifica_produto(codProduto)):
+        buscarProduto = cursor.execute(f"SELECT * FROM produto WHERE codigo = {codProduto}")
+        # buscarProduto = ['Caderno', 'Ponte Preta', '6', 10, 30, 20, 20, 29.99]
+
+        for lista in buscarProduto:
+            menu_editarProduto(lista)
+
+        opcao = input("Escolha uma opção: ")
+                
+        if opcao == "1":
+            atualizar_tabela('nome', codProduto)
+        elif opcao == "2":
+            atualizar_tabela('descricao', codProduto)
+        # elif opcao == "3":
+        #     atualizar_tabela('codigo', codProduto)
+        elif opcao == "3":
+            atualizar_tabela('custo', codProduto)
+        elif opcao == "4":
+            atualizar_tabela('custoFixo', codProduto)
+        elif opcao == "5":
+            atualizar_tabela('comissao', codProduto)
+        elif opcao == "6":
+            atualizar_tabela('imposto', codProduto)
+        elif opcao == "7":
+            atualizar_tabela('rentabilidade', codProduto)
+        else:
+            print("\n Opção inválida. Tente novamente. \n ") 
+
+        print("Editar produto")
+    else: 
+        print("Produto não encontrado!")
 
 # Campos da tabela PRODUTO
 
@@ -145,17 +227,15 @@ def listar_produto():
 # [7] - rentabilidade
 
 def tabela_produto(tabela):
-     for row in tabela:
-
     # Campos
-        nomeBD = row[0]
-        descricaoDB = row[1]
-        codigoDB = row[2]
-        custoProdutoBD = row[3]
-        custoFixoBD = row[4]
-        comissaoVendaPctBD = row[5]
-        impostoVendaPctBD =row[6]
-        margemLucroPctBD = row[7]
+        nomeBD = tabela[0]
+        descricaoDB = tabela[1]
+        codigoDB = tabela[2]
+        custoProdutoBD = tabela[3]
+        custoFixoBD = tabela[4]
+        comissaoVendaPctBD = tabela[5]
+        impostoVendaPctBD =tabela[6]
+        margemLucroPctBD = tabela[7]
     
     
         # Margem de lucro
@@ -231,10 +311,15 @@ while True:
     elif opcao == "2":
         selecionar_produto()
     elif opcao == "3":
-        deletar_produto()
-    elif opcao == "4":
         listar_produto()
+    elif opcao == "4":
+        deletar_produto()
     elif opcao == "5":
+        editar_produto()
+    elif opcao == "6":
         break
     else:
         print("\n Opção inválida. Tente novamente. \n ")
+
+
+
