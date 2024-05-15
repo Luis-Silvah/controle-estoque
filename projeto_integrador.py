@@ -210,8 +210,6 @@ def editar_produto():
             atualizar_tabela('rentabilidade', codProduto)
         else:
             print("\n Opção inválida. Tente novamente. \n ") 
-
-        print("Editar produto")
     else: 
         print("Produto não encontrado!")
 
