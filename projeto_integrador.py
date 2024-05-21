@@ -135,6 +135,7 @@ def criptografia():
     resultado_criptografia = multiplicacao_matrizes(matrizPalavra, chaveCriptografia)
     resultado_criptografia= pmodulo_lista(resultado_criptografia,26)
     
+    
     return resultado_criptografia
 def adicionar_produto():
     print(36 * "=")
@@ -156,6 +157,7 @@ def adicionar_produto():
         impostoVendaPct = float(input("Qual a aliquota de imposto desejada [%]: "))
         margemLucroPct = float(input("Qual a margem de lucro desejada [%]: "))
 
+        criptografia()
 
 
         listaProduto = []
