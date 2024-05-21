@@ -83,6 +83,59 @@ def verifica_produto(selecionaProduto):
 
     return produto_encontrado
 
+def pmodulo_lista(lista, divisor):
+    restos = []
+    for sublista in lista:
+        resto_sublista = []
+        for num in sublista:
+            resto = num % divisor
+            resto_sublista.append(resto)
+        restos.append(resto_sublista)
+    return restos
+
+def multiplicacao_matrizes(matrizPalavra, chaveCriptografia):
+    if len(matrizPalavra[0]) != len(chaveCriptografia):
+        print("Número de colunas em A não é igual ao número de linhas em B.")
+        return None
+
+    result = [[0 for _ in range(len(chaveCriptografia[0]))] for _ in range(len(matrizPalavra))]
+
+    # Realiza a multiplicação de matrizes
+    for i in range(len(matrizPalavra)):
+        for j in range(len(chaveCriptografia[0])):
+            for k in range(len(chaveCriptografia)):
+                result[i][j] += matrizPalavra[i][k] * chaveCriptografia[k][j]
+
+    return result
+
+def criptografia():
+    tabela_alfabeto = ['Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
+    chaveCriptografia = [[11, 13], [2, 3]]     
+    
+    
+    
+    descProdutoList = []
+
+    if len(descProduto) % 2 == 0:
+        descProdutoList = list(descProduto.upper())
+    else:
+        descProdutoList = list(descProduto.upper())
+        descProdutoList.append(descProduto[-1].upper())
+    listaPalavra = []
+    
+    
+    for letraPalavra in descProduto:
+        for numAlfabeto in range(len(tabela_alfabeto)):
+            if letraPalavra == tabela_alfabeto[numAlfabeto]:
+                listaPalavra.append(numAlfabeto)
+                print(f"Letra: {tabela_alfabeto[numAlfabeto]} - {numAlfabeto}")
+
+    matrizPalavra = [listaPalavra[i:i+2] for i in range(0, len(listaPalavra), 2)]
+
+    resultado_criptografia = multiplicacao_matrizes(matrizPalavra, chaveCriptografia)
+    resultado_criptografia= pmodulo_lista(resultado_criptografia,26)
+    
+    return resultado_criptografia
 def adicionar_produto():
     print(36 * "=")
     print("\t Sistema de Cadastro")
@@ -94,13 +147,16 @@ def adicionar_produto():
         print('\n Já existe um produto com esse codigo \n')
     else:
         nomeProduto = input("Digite o nome do produto: ")
+        global descProduto
         descProduto = input("Adicione uma descrição ao produto: ")
-
+    
         custoProduto = float(input("Qual o custo do Produto: "))
         custoFixoPct = float(input("Qual os custo fixos/administrativos do comércio [%]: "))
         comissaoVendaPct = float(input("Qual a comissão de venda do produto,em porcentagem [%]: "))
         impostoVendaPct = float(input("Qual a aliquota de imposto desejada [%]: "))
         margemLucroPct = float(input("Qual a margem de lucro desejada [%]: "))
+
+
 
         listaProduto = []
         listaProduto.append([nomeProduto,descProduto, codProduto, custoProduto, custoFixoPct, comissaoVendaPct, impostoVendaPct, margemLucroPct])
