@@ -108,33 +108,28 @@ def multiplicacao_matrizes(matrizPalavra, chaveCriptografia):
 
     return result
 
-def criptografia():
+def criptografia(descProduto):
     tabela_alfabeto = ['Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
-    chaveCriptografia = [[11, 13], [2, 3]]     
+    chaveCriptografia = [[11, 2], [13, 3]]     
     
-    
-    
-    descProdutoList = []
+    # Lista para armazenar os caracteres
+    descProdutoList = list(descProduto)
 
-    if len(descProduto) % 2 == 0:
-        descProdutoList = list(descProduto.upper())
-    else:
-        descProdutoList = list(descProduto.upper())
-        descProdutoList.append(descProduto[-1].upper())
+    # Se o comprimento da lista for ímpar, adiciona o último caractere novamente
+    if len(descProdutoList) % 2 != 0:
+        descProdutoList.append(descProdutoList[-1])
+    
     listaPalavra = []
     
-    
-    for letraPalavra in descProduto:
+    for letraPalavra in descProdutoList:
         for numAlfabeto in range(len(tabela_alfabeto)):
             if letraPalavra == tabela_alfabeto[numAlfabeto]:
                 listaPalavra.append(numAlfabeto)
-                print(f"Letra: {tabela_alfabeto[numAlfabeto]} - {numAlfabeto}")
 
     matrizPalavra = [listaPalavra[i:i+2] for i in range(0, len(listaPalavra), 2)]
 
     resultado_criptografia = multiplicacao_matrizes(matrizPalavra, chaveCriptografia)
     resultado_criptografia= pmodulo_lista(resultado_criptografia,26)
-    
     
     return resultado_criptografia
 def adicionar_produto():
@@ -157,7 +152,7 @@ def adicionar_produto():
         impostoVendaPct = float(input("Qual a aliquota de imposto desejada [%]: "))
         margemLucroPct = float(input("Qual a margem de lucro desejada [%]: "))
 
-        criptografia()
+        criptografia(descProduto)
 
 
         listaProduto = []
