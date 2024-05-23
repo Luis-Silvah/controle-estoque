@@ -60,7 +60,8 @@ def insert_produtos():
     connection.commit()
 
 insert_produtos()
-tabela_alfabeto = ['Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
+tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
 def descriptografia():
     chaveDescriptografia = [[165 ,-30],[-195,45]]
     C = [[46, 9], [219, 43], [233, 43]]
@@ -91,8 +92,8 @@ def exibir_menu():
     print("1. Adicionar novo produto")
     print("2. Selecionar um produto")
     print("3. Listar produtos")
-    print("4. Deletar produtos")
-    print("5. Atualizar produtos")
+    print("4. Deletar produto")
+    print("5. Atualizar produto")
     print("6. Sair")
     print(36 * "-")
     
@@ -132,10 +133,11 @@ def multiplicacao_matrizes(matrizPalavra, chaveCriptografia):
     return result
 
 def criptografia(descProduto):
-    tabela_alfabeto = ['Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
-    chaveCriptografia = [[11, 2], [13, 3]]     
+    tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    chaveCriptografia = [[11, 2], [13, 3]]   
+    # chaveCriptografia = [[4, 1], [3, 2]]   
+    textoCriptografado = ''  
     
-    # Lista para armazenar os caracteres
     descProdutoList = list(descProduto)
 
     # Se o comprimento da lista for ímpar, adiciona o último caractere novamente
@@ -143,18 +145,35 @@ def criptografia(descProduto):
         descProdutoList.append(descProdutoList[-1])
     
     listaPalavra = []
-    
+    listaNumeros = []
+
     for letraPalavra in descProdutoList:
         for numAlfabeto in range(len(tabela_alfabeto)):
             if letraPalavra == tabela_alfabeto[numAlfabeto]:
-                listaPalavra.append(numAlfabeto)
-
+                if(letraPalavra == 'Z'):
+                    listaPalavra.append(0)
+                else:
+                    listaPalavra.append(numAlfabeto)
+                
     matrizPalavra = [listaPalavra[i:i+2] for i in range(0, len(listaPalavra), 2)]
-
+    
     resultado_criptografia = multiplicacao_matrizes(matrizPalavra, chaveCriptografia)
     resultado_criptografia= pmodulo_lista(resultado_criptografia,26)
     
-    return resultado_criptografia
+    for item in resultado_criptografia: 
+        for k in item:
+            listaNumeros.append(k)
+            
+    for num in listaNumeros:
+        for numAlfabeto in range(len(tabela_alfabeto)):
+            if num == numAlfabeto:
+                if numAlfabeto == 0:
+                    textoCriptografado += 'Z'
+                else:
+                    textoCriptografado += tabela_alfabeto[numAlfabeto]
+    
+    return textoCriptografado
+
 def adicionar_produto():
     print(36 * "=")
     print("\t Sistema de Cadastro")
@@ -166,17 +185,13 @@ def adicionar_produto():
         print('\n Já existe um produto com esse codigo \n')
     else:
         nomeProduto = input("Digite o nome do produto: ")
-        global descProduto
-        descProduto = input("Adicione uma descrição ao produto: ")
-    
+        descProduto = input("Adicione uma descrição ao produto: ").upper(   )
+        descProduto = criptografia(descProduto)
         custoProduto = float(input("Qual o custo do Produto: "))
         custoFixoPct = float(input("Qual os custo fixos/administrativos do comércio [%]: "))
         comissaoVendaPct = float(input("Qual a comissão de venda do produto,em porcentagem [%]: "))
         impostoVendaPct = float(input("Qual a aliquota de imposto desejada [%]: "))
         margemLucroPct = float(input("Qual a margem de lucro desejada [%]: "))
-
-        criptografia(descProduto)
-
 
         listaProduto = []
         listaProduto.append([nomeProduto,descProduto, codProduto, custoProduto, custoFixoPct, comissaoVendaPct, impostoVendaPct, margemLucroPct])
@@ -205,7 +220,7 @@ def selecionar_produto():
         print("\n Não foi possivel encontrar produto! \n")
 
 def listar_produto():
-    resultado = cursor.execute(f'SELECT * FROM PRODUTO')
+    resultado = cursor.execute(f'SELECT * FROM PRODUTO ORDER BY codigo ASC')
 
     for lista in resultado:
         tabela_produto(lista)
@@ -239,12 +254,12 @@ def menu_editarProduto(prod):
     print(40 * "=")
     print(f"1. Nome: \t\t {prod[0]}")
     print(f"2. Descrição: \t\t {prod[1]}")
-    # print(f"3. Código: \t\t\t {prod[2]}")
-    print(f"3. Custo: \t\t\t {prod[3]}")
-    print(f"4. Custo Fixo/Administrativo: \t {prod[4]}")
-    print(f"5. Comissão: \t\t\t {prod[5]}")
-    print(f"6. Imposto: \t\t\t {prod[6]}")
-    print(f"7. Rentabilidade: \t\t {prod[7]}")
+    print(f"3. Código: \t\t\t {prod[2]}")
+    print(f"4. Custo: \t\t\t {prod[3]}")
+    print(f"5. Custo Fixo/Administrativo: \t {prod[4]}")
+    print(f"6. Comissão: \t\t\t {prod[5]}")
+    print(f"7. Imposto: \t\t\t {prod[6]}")
+    print(f"8. Rentabilidade: \t\t {prod[7]}")
     print(40 * "-")
 
 def atualizar_tabela(column, codProduto):
@@ -261,7 +276,6 @@ def editar_produto():
 
     if(verifica_produto(codProduto)):
         buscarProduto = cursor.execute(f"SELECT * FROM produto WHERE codigo = {codProduto}")
-        # buscarProduto = ['Caderno', 'Ponte Preta', '6', 10, 30, 20, 20, 29.99]
 
         for lista in buscarProduto:
             menu_editarProduto(lista)
@@ -271,18 +285,34 @@ def editar_produto():
         if opcao == "1":
             atualizar_tabela('nome', codProduto)
         elif opcao == "2":
-            atualizar_tabela('descricao', codProduto)
-        # elif opcao == "3":
-        #     atualizar_tabela('codigo', codProduto)
+            descProduto = input("Digite a descrição do produto: ").upper()
+            descProduto = criptografia(descProduto)
+
+            cursor.execute(f"""
+                UPDATE produto SET descricao = '{descProduto}' WHERE codigo = {codProduto}
+            """)
+            connection.commit()
+            print("Produto atualizado com sucesso")
         elif opcao == "3":
-            atualizar_tabela('custo', codProduto)
+            novoCodigoProduto = input('Digite o código do produto: ')
+
+            if(verifica_produto(novoCodigoProduto)):
+                print("\n Já existe um produto com esse código: \n")
+            else: 
+                cursor.execute(f"""
+                    UPDATE produto SET codigo = '{novoCodigoProduto}' WHERE codigo = {codProduto}
+                """)
+                connection.commit()
+                print("Produto atualizado com sucesso")
         elif opcao == "4":
-            atualizar_tabela('custoFixo', codProduto)
+            atualizar_tabela('custo', codProduto)
         elif opcao == "5":
-            atualizar_tabela('comissao', codProduto)
+            atualizar_tabela('custoFixo', codProduto)
         elif opcao == "6":
-            atualizar_tabela('imposto', codProduto)
+            atualizar_tabela('comissao', codProduto)
         elif opcao == "7":
+            atualizar_tabela('imposto', codProduto)
+        elif opcao == "8":
             atualizar_tabela('rentabilidade', codProduto)
         else:
             print("\n Opção inválida. Tente novamente. \n ") 
@@ -394,6 +424,7 @@ while True:
         break
     else:
         print("\n Opção inválida. Tente novamente. \n ")
+
 
 
 
