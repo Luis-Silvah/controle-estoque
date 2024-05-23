@@ -60,6 +60,29 @@ def insert_produtos():
     connection.commit()
 
 insert_produtos()
+tabela_alfabeto = ['Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
+def descriptografia():
+    chaveDescriptografia = [[165 ,-30],[-195,45]]
+    C = [[46, 9], [219, 43], [233, 43]]
+    
+    p = multiplicacao_matrizes(C,chaveDescriptografia)
+
+    p = pmodulo_lista(p,26)
+
+    lista = []
+
+    for item in p: 
+        for k in item:
+            lista.append(k)
+    
+    listaPalavra = []
+    lista = [9, 16, 8, 15, 14, 3]
+    for letraPalavra in lista:
+            listaPalavra.append(tabela_alfabeto[letraPalavra])
+    result =  ''.join( numero for numero in listaPalavra)
+
+
+    return result
 
 def exibir_menu():
     print(36 * "=")
