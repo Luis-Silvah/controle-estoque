@@ -60,7 +60,6 @@ def insert_produtos():
     connection.commit()
 
 insert_produtos()
-tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 def descriptografia():
     chaveDescriptografia = [[165 ,-30],[-195,45]]
@@ -185,7 +184,7 @@ def adicionar_produto():
         print('\n Já existe um produto com esse codigo \n')
     else:
         nomeProduto = input("Digite o nome do produto: ")
-        descProduto = input("Adicione uma descrição ao produto: ").upper(   )
+        descProduto = input("Adicione uma descrição ao produto: ").upper()
         descProduto = criptografia(descProduto)
         custoProduto = float(input("Qual o custo do Produto: "))
         custoFixoPct = float(input("Qual os custo fixos/administrativos do comércio [%]: "))
