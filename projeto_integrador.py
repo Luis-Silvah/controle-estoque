@@ -62,28 +62,52 @@ def insert_produtos():
 insert_produtos()
 tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-def descriptografia():
-    chaveDescriptografia = [[165 ,-30],[-195,45]]
-    C = [[46, 9], [219, 43], [233, 43]]
-    
-    p = multiplicacao_matrizes(C,chaveDescriptografia)
+def descriptografia(lista):
+    chaveDescriptografia = [[45, -30], [-195, 165]]
+    tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    textoDescriptografado = ''
 
-    p = pmodulo_lista(p,26)
+    descProdutoList = list(lista[1])
 
-    lista = []
-
-    for item in p: 
-        for k in item:
-            lista.append(k)
+    # Se o comprimento da lista for ímpar, adiciona o último caractere novamente
+    if len(descProdutoList) % 2 != 0:
+        descProdutoList.append(descProdutoList[-1])
     
     listaPalavra = []
-    lista = [9, 16, 8, 15, 14, 3]
-    for letraPalavra in lista:
-            listaPalavra.append(tabela_alfabeto[letraPalavra])
-    result =  ''.join( numero for numero in listaPalavra)
+    listaNumeros = []
+
+    for letraPalavra in descProdutoList:
+        for numAlfabeto in range(len(tabela_alfabeto)):
+            if letraPalavra == tabela_alfabeto[numAlfabeto]:
+                if(letraPalavra == 'Z'):
+                    listaPalavra.append(0)
+                else:
+                    listaPalavra.append(numAlfabeto)
+                
+    matrizPalavra = [listaPalavra[i:i+2] for i in range(0, len(listaPalavra), 2)]
+    
+    resultado_descriptografia = multiplicacao_matrizes(chaveDescriptografia,matrizPalavra)
+    resultado_descriptografia = pmodulo_lista(resultado_descriptografia,26)
 
 
-    return result
+    
+
+    for i in range(len(resultado_descriptografia)):
+        for k in resultado_descriptografia[i]:
+            listaNumeros.append(k)
+    
+    for num in listaNumeros:
+        for numAlfabeto in range(len(tabela_alfabeto)):
+            if num == numAlfabeto:
+                if numAlfabeto == 0:
+                    textoDescriptografado += 'Z'
+                else:
+                    textoDescriptografado += tabela_alfabeto[numAlfabeto]
+    if textoDescriptografado[-1] == textoDescriptografado[-2]:
+        textoDescriptografado = textoDescriptografado[:-1]
+    
+    
+    return textoDescriptografado
 
 def exibir_menu():
     print(36 * "=")
@@ -117,7 +141,7 @@ def pmodulo_lista(lista, divisor):
         restos.append(resto_sublista)
     return restos
 
-def multiplicacao_matrizes(matrizPalavra, chaveCriptografia):
+def multiplicacao_matrizes(chaveCriptografia, matrizPalavra):
     if len(matrizPalavra[0]) != len(chaveCriptografia):
         print("Número de colunas em A não é igual ao número de linhas em B.")
         return None
@@ -157,7 +181,7 @@ def criptografia(descProduto):
                 
     matrizPalavra = [listaPalavra[i:i+2] for i in range(0, len(listaPalavra), 2)]
     
-    resultado_criptografia = multiplicacao_matrizes(matrizPalavra, chaveCriptografia)
+    resultado_criptografia = multiplicacao_matrizes(chaveCriptografia, matrizPalavra)
     resultado_criptografia= pmodulo_lista(resultado_criptografia,26)
     
     for item in resultado_criptografia: 
@@ -202,6 +226,11 @@ def adicionar_produto():
                 """)
         connection.commit()
 
+        lista = listaProduto[0]
+        texto_descriptografado = descriptografia(lista)
+        lista.pop(1)
+        lista.insert(1,texto_descriptografado)
+        
         tabela_produto(listaProduto[0])
 
         print('\n Cadastro concluído com sucesso! \n')
@@ -213,6 +242,11 @@ def selecionar_produto():
 
     produto_encontrado = False
     for lista in resultado:
+        lista = list(lista)
+        texto_descriptografado = descriptografia(lista)
+        lista.pop(1)
+        lista.insert(1,texto_descriptografado)
+        print(lista)
         produto_encontrado = True
         tabela_produto(lista)
     
@@ -223,6 +257,10 @@ def listar_produto():
     resultado = cursor.execute(f'SELECT * FROM PRODUTO ORDER BY codigo ASC')
 
     for lista in resultado:
+        lista = list(lista)
+        texto_descriptografado = descriptografia(lista)
+        lista.pop(1)
+        lista.insert(1,texto_descriptografado)
         tabela_produto(lista)
 
 def deletar_produto():
