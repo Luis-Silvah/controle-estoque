@@ -29,44 +29,44 @@ cursor.execute("""
 def insert_produtos():
     cursor.execute(""" 
                 INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
-                VALUES ('Caneta', 'Caneta Profissional', '1', 36, 15, 5, 12, 20)
+                VALUES ('Caneta', 'TIKQYQTHIVHWNMITKL', '1', 36, 15, 5, 12, 20)
     """)
 
     cursor.execute(""" 
                     INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
-                    VALUES ('Lapis', 'Preto B2', '2', 1, 1, 1, 1, 1)
+                    VALUES ('Lapis', 'THCRVW', '2', 1, 1, 1, 1, 1)
     """)
 
     cursor.execute("""
                     INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
-                    VALUES ('Caderno', 'Palmeiras', '3', 10, 10, 10, 10, 50)
+                    VALUES ('Caderno', 'THCRVW', '3', 10, 10, 10, 10, 50)
                     """)
 
     cursor.execute("""
                     INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
-                    VALUES ('Caderno', 'São Paulo', '4', 10, 10, 10, 10, 0)
+                    VALUES ('Caderno', 'THCRVW', '4', 10, 10, 10, 10, 0)
                     """)
 
     cursor.execute("""
                     INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
-                    VALUES ('Caderno', 'Corinthians', '5', 10, 10, 10, 10, -20)
+                    VALUES ('Caderno', 'THCRVW', '5', 10, 10, 10, 10, -20)
                     """)
 
     cursor.execute("""
                     INSERT INTO produto (nome, descricao, codigo, custo, custoFixo, comissao, imposto, rentabilidade) 
-                    VALUES ('Caderno', 'Ponte Preta', '6', 10, 30, 20, 20, 29.99)
+                    VALUES ('Caderno', 'THCRVW', '6', 10, 30, 20, 20, 29.99)
                     """)
 
     connection.commit()
 
 insert_produtos()
-
-def descriptografia(lista):
+tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    
+def descriptografia(descProduto):
     chaveDescriptografia = [[45, -30], [-195, 165]]
-    tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     textoDescriptografado = ''
 
-    descProdutoList = list(lista[1])
+    descProdutoList = list(descProduto)
 
     # Se o comprimento da lista for ímpar, adiciona o último caractere novamente
     if len(descProdutoList) % 2 != 0:
@@ -88,9 +88,6 @@ def descriptografia(lista):
     resultado_descriptografia = multiplicacao_matrizes(chaveDescriptografia,matrizPalavra)
     resultado_descriptografia = pmodulo_lista(resultado_descriptografia,26)
 
-
-    
-
     for i in range(len(resultado_descriptografia)):
         for k in resultado_descriptografia[i]:
             listaNumeros.append(k)
@@ -104,7 +101,6 @@ def descriptografia(lista):
                     textoDescriptografado += tabela_alfabeto[numAlfabeto]
     if textoDescriptografado[-1] == textoDescriptografado[-2]:
         textoDescriptografado = textoDescriptografado[:-1]
-    
     
     return textoDescriptografado
 
@@ -121,7 +117,7 @@ def exibir_menu():
     print(36 * "-")
     
 def verifica_produto(selecionaProduto):
-    resultado = cursor.execute(f'SELECT * FROM PRODUTO WHERE codigo = {selecionaProduto}')
+    resultado = cursor.execute(f"SELECT * FROM PRODUTO WHERE codigo = '{selecionaProduto}'")
 
     produto_encontrado = False
 
@@ -156,9 +152,7 @@ def multiplicacao_matrizes(chaveCriptografia, matrizPalavra):
     return result
 
 def criptografia(descProduto):
-    tabela_alfabeto = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     chaveCriptografia = [[11, 2], [13, 3]]   
-    # chaveCriptografia = [[4, 1], [3, 2]]   
     textoCriptografado = ''  
     
     descProdutoList = list(descProduto)
@@ -202,7 +196,7 @@ def adicionar_produto():
     print("\t Sistema de Cadastro")
     print(36 * "=")
 
-    codProduto = int(input("Digite o código do produto: "))
+    codProduto = input("Digite o código do produto: ")
  
     if(verifica_produto(codProduto)):
         print('\n Já existe um produto com esse codigo \n')
@@ -224,11 +218,6 @@ def adicionar_produto():
                     VALUES ('{nomeProduto}', '{descProduto}', '{codProduto}', {custoProduto}, {custoFixoPct}, {comissaoVendaPct}, {impostoVendaPct}, {margemLucroPct})
                 """)
         connection.commit()
-
-        lista = listaProduto[0]
-        texto_descriptografado = descriptografia(lista)
-        lista.pop(1)
-        lista.insert(1,texto_descriptografado)
         
         tabela_produto(listaProduto[0])
 
@@ -237,15 +226,10 @@ def adicionar_produto():
 def selecionar_produto():
     selecionaProduto = input('Digite o código do produto: ')
 
-    resultado = cursor.execute(f'SELECT * FROM PRODUTO WHERE codigo = {selecionaProduto}')
+    resultado = cursor.execute(f"SELECT * FROM PRODUTO WHERE codigo = '{selecionaProduto}'")
 
     produto_encontrado = False
     for lista in resultado:
-        lista = list(lista)
-        texto_descriptografado = descriptografia(lista)
-        lista.pop(1)
-        lista.insert(1,texto_descriptografado)
-        print(lista)
         produto_encontrado = True
         tabela_produto(lista)
     
@@ -256,10 +240,6 @@ def listar_produto():
     resultado = cursor.execute(f'SELECT * FROM PRODUTO ORDER BY codigo ASC')
 
     for lista in resultado:
-        lista = list(lista)
-        texto_descriptografado = descriptografia(lista)
-        lista.pop(1)
-        lista.insert(1,texto_descriptografado)
         tabela_produto(lista)
 
 def deletar_produto():
@@ -285,12 +265,13 @@ def deletar_produto():
     else:
         print("\n Erro ao deletar produto! \n")
 
+# Menu de opções possiveis para atualizar o produto
 def menu_editarProduto(prod):
     print(40 * "=")
     print("Menu editar produto:")
     print(40 * "=")
     print(f"1. Nome: \t\t {prod[0]}")
-    print(f"2. Descrição: \t\t {prod[1]}")
+    print(f"2. Descrição: \t\t {descriptografia(prod[1])}")
     print(f"3. Código: \t\t\t {prod[2]}")
     print(f"4. Custo: \t\t\t {prod[3]}")
     print(f"5. Custo Fixo/Administrativo: \t {prod[4]}")
@@ -299,20 +280,22 @@ def menu_editarProduto(prod):
     print(f"8. Rentabilidade: \t\t {prod[7]}")
     print(40 * "-")
 
+# Atualiza os campos do produto
 def atualizar_tabela(column, codProduto):
         valor = input("Digite o novo valor: ")
 
         cursor.execute(f"""
-            UPDATE produto SET {column} = '{valor}' WHERE codigo = {codProduto}
+            UPDATE produto SET {column} = '{valor}' WHERE codigo = '{codProduto}'
         """)
         connection.commit()
         print("Produto atualizado com sucesso!")
 
+# Recebe a opção do menu editar produto e direciona na função para atualizaro o campo
 def editar_produto():
     codProduto = input('Digite o código do produto: ')
 
     if(verifica_produto(codProduto)):
-        buscarProduto = cursor.execute(f"SELECT * FROM produto WHERE codigo = {codProduto}")
+        buscarProduto = cursor.execute(f"SELECT * FROM produto WHERE codigo = '{codProduto}'")
 
         for lista in buscarProduto:
             menu_editarProduto(lista)
@@ -367,10 +350,11 @@ def editar_produto():
 # [6] - imposto
 # [7] - rentabilidade
 
+# Formata os dados e mostra na tabela o produto
 def tabela_produto(tabela):
     # Campos
         nomeBD = tabela[0]
-        descricaoDB = tabela[1]
+        descricaoDB = descriptografia(tabela[1])
         codigoDB = tabela[2]
         custoProdutoBD = tabela[3]
         custoFixoBD = tabela[4]
@@ -378,9 +362,9 @@ def tabela_produto(tabela):
         impostoVendaPctBD =tabela[6]
         margemLucroPctBD = tabela[7]
     
-    
-        # Margem de lucro
+        # Margem de lucro < 100
         if margemLucroPctBD < 100:
+            # Preço de venda produto
             precoVenda = custoProdutoBD / (
             1 - ((custoFixoBD + comissaoVendaPctBD + impostoVendaPctBD + margemLucroPctBD) / 100)
              )
